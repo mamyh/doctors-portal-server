@@ -17,11 +17,26 @@ async function run() {
     await client.connect();
     const database = client.db('doctors-portal');
     const appointmentsCollection = database.collection('appointments');
+    // get all the appointments 
+    // app.get('/appointments', async (req, res) => {
+    //     const result = appointmentsCollection.find({}).toArray();
+    //     res.send(result);
+    // });
+    // get all the appointments matched with a single field
     app.get('/appointments', async (req, res) => {
+        const email = req.query.email;
+        const date = new Date(req.query.date).toLocaleDateString();
+        const query = { email, appointDate: date };
+        const result = await appointmentsCollection.find(query).toArray();
+        console.log(result);
+        res.send(result);
 
-    });
+    })
     app.post('/appointments', async (req, res) => {
-
+        const data = req.body;
+        const result = await appointmentsCollection.insertOne(data);
+        console.log(result);
+        res.send(result);
     })
 }
 
