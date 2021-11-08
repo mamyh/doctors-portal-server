@@ -26,7 +26,8 @@ async function run() {
     app.get('/appointments', async (req, res) => {
         const email = req.query.email;
         const date = new Date(req.query.date).toLocaleDateString();
-        const query = { email, appointDate: date };
+        const query = { email: email, appointDate: date };
+        console.log(query);
         const result = await appointmentsCollection.find(query).toArray();
         console.log(result);
         res.send(result);
@@ -34,6 +35,7 @@ async function run() {
     })
     app.post('/appointments', async (req, res) => {
         const data = req.body;
+        console.log(data);
         const result = await appointmentsCollection.insertOne(data);
         console.log(result);
         res.send(result);
