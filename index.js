@@ -41,12 +41,29 @@ async function run() {
         console.log(result);
         res.send(result);
     });
-
+    app.get('/users/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { email: email };
+        const user = await usersCollection.findOne(query);
+        let isAdmin = false;
+        console.log(user);
+        if (user?.role === "admin") {
+            isAdmin = true;
+        }
+        res.send({ isAdmin });
+    })
     app.post('/users', async (req, res) => {
         const data = req.body;
         const result = await usersCollection.insertOne(data);
         res.send(result);
     });
+    app.put('/users/admin', async (req, res) => {
+        const user = req.body;
+        const filter = { email: user.email };
+        const updateData = { $set: { role: 'admin' } };
+        const result = await usersCollection.updateOne(filter, updateData);
+        res.send(result);
+    })
     app.put('/users', async (req, res) => {
         const data = req.body;
         const filter = { email: data.email };
